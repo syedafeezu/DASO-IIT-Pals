@@ -44,3 +44,8 @@ export const getServiceTypes = async () => {
     const response = await api.get('/service-types');
     return response.data;
 };
+
+export const getAppointments = async (date) => {
+    const response = await api.get(`/appointments?date=${date}`);
+    return response.data;
+};

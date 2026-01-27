@@ -4,11 +4,14 @@ import QueueList from '../components/Staff/QueueList';
 import { getQueueStatus } from '../services/api';
 import { RefreshCw, Users, TrendingUp } from 'lucide-react';
 
+import AppointmentCalendar from '../components/Staff/AppointmentCalendar';
+
 const StaffPage = () => {
     const [queue, setQueue] = useState([]);
     const [currentCustomer, setCurrentCustomer] = useState(null);
     const [loading, setLoading] = useState(true);
     const [staffStats, setStaffStats] = useState({ completed: 12, avgTime: 4.5 });
+    const [viewMode, setViewMode] = useState('queue'); // 'queue' or 'calendar'
 
     const fetchQueue = async () => {
         try {
@@ -61,6 +64,21 @@ const StaffPage = () => {
                     </div>
                 </div>
 
+                <div className="flex gap-4">
+                    <button
+                        onClick={() => setViewMode('queue')}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'queue' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+                    >
+                        Live Queue
+                    </button>
+                    <button
+                        onClick={() => setViewMode('calendar')}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'calendar' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+                    >
+                        Appointments
+                    </button>
+                </div>
+
                 <div className="flex gap-8 text-sm">
                     <div className="flex items-center gap-2">
                         <Users className="text-gray-500" size={16} />
@@ -93,16 +111,22 @@ const StaffPage = () => {
                     />
                 </div>
 
-                {/* Sidebar Queue */}
-                <div className="lg:col-span-1 bg-gray-900/30 rounded-3xl p-6 border border-gray-800 flex flex-col">
-                    <h2 className="text-xl font-bold mb-4 flex justify-between items-center">
-                        <span>Up Next</span>
-                        <span className="text-xs bg-gray-800 px-2 py-1 rounded text-gray-400">Priority Sort</span>
-                    </h2>
+                {/* Sidebar Queue or Calendar */}
+                <div className="lg:col-span-1 h-[600px]">
+                    {viewMode === 'queue' ? (
+                        <div className="bg-gray-900/30 rounded-3xl p-6 border border-gray-800 flex flex-col h-full">
+                            <h2 className="text-xl font-bold mb-4 flex justify-between items-center">
+                                <span>Up Next</span>
+                                <span className="text-xs bg-gray-800 px-2 py-1 rounded text-gray-400">Priority Sort</span>
+                            </h2>
 
-                    <div className="overflow-y-auto flex-1 pr-2 scrollbar-thin scrollbar-thumb-gray-800">
-                        <QueueList queue={queue} />
-                    </div>
+                            <div className="overflow-y-auto flex-1 pr-2 scrollbar-thin scrollbar-thumb-gray-800">
+                                <QueueList queue={queue} />
+                            </div>
+                        </div>
+                    ) : (
+                        <AppointmentCalendar />
+                    )}
                 </div>
             </div>
         </div>

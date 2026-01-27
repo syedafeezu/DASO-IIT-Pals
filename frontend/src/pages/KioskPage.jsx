@@ -42,6 +42,15 @@ const KioskPage = () => {
                         <WalkInForm
                             onBack={() => setView('welcome')}
                             onComplete={handleComplete}
+                            mode="walk_in"
+                        />
+                    )}
+
+                    {view === 'pre_book' && (
+                        <WalkInForm
+                            onBack={() => setView('welcome')}
+                            onComplete={handleComplete}
+                            mode="pre_book"
                         />
                     )}
 

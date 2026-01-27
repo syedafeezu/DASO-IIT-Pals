@@ -35,6 +35,15 @@ const WelcomeScreen = ({ onSelectMode }) => {
                 </button>
             </div>
 
+            <div className="flex justify-center w-full">
+                <button
+                    onClick={() => onSelectMode('pre_book')}
+                    className="text-gray-400 hover:text-blue-400 font-mono text-sm border-b border-dashed border-gray-600 hover:border-blue-400 transition-all pb-1"
+                >
+                    Book a Future Appointment (Simulation)
+                </button>
+            </div>
+
             <div className="absolute bottom-8 text-gray-500">
                 IIT PALS Innovation Prototype
             </div>

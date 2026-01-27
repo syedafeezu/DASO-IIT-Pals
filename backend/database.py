@@ -200,7 +200,12 @@ def get_queue(status: str = None, limit: int = 20) -> List[dict]:
             conditions.append("q.status = ?")
             params.append(status)
         else:
-            conditions.append("q.status IN ('waiting', 'checked_in', 'in_progress')")
+            # Only show walk-ins that are waiting, or anyone checked_in/in_progress
+            # Pre-booked customers only show up in queue AFTER they check in
+            conditions.append("""
+                (q.status = 'waiting' AND q.booking_type = 'walk_in') 
+                OR q.status IN ('checked_in', 'in_progress')
+            """)
         
         if conditions:
             query += " WHERE " + " AND ".join(conditions)

@@ -269,6 +269,38 @@ async def book_slot(request: BookSlotRequest):
     }
 
 
+@app.get("/appointments")
+async def get_appointments(date: str = Query(..., description="Date in YYYY-MM-DD format")):
+    """Get all appointments for a specific date."""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT q.*, c.name as customer_name, c.mobile 
+               FROM queue_entries q
+               LEFT JOIN customers c ON q.customer_id = c.id
+               WHERE q.booking_type = 'pre_booked' 
+               AND substr(q.scheduled_time, 1, 10) = ?
+               ORDER BY q.scheduled_time ASC""",
+            (date,)
+        )
+        appointments = [dict(row) for row in cursor.fetchall()]
+        
+    return {
+        "date": date,
+        "appointments": [
+            {
+                "id": a["id"],
+                "time": datetime.fromisoformat(a["scheduled_time"]).strftime("%H:%M"),
+                "customer": a["customer_name"] or "Guest",
+                "service": a["service_type"],
+                "status": a["status"],
+                "mobile": a["mobile"]
+            }
+            for a in appointments
+        ]
+    }
+
+
 @app.get("/queue-status")
 async def queue_status(
     status: Optional[str] = Query(None, description="Filter by status"),
@@ -485,7 +517,8 @@ async def simulate_proximity(request: ProximityRequest):
         raise HTTPException(status_code=404, detail="Customer not found")
     
     # Find their pending queue entry
-    queue = get_queue()
+    # Pass status='waiting' to ensure we get the pre-booked entry even if filtered out by default get_queue
+    queue = get_queue(status='waiting', limit=100)
     customer_entry = next(
         (q for q in queue if q.get("mobile") == request.mobile and q["status"] == "waiting"),
         None
