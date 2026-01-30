@@ -6,8 +6,11 @@ const WelcomeScreen = ({ onSelectMode }) => {
         <div className="flex flex-col items-center justify-center h-full space-y-12">
             <div className="text-center space-y-4">
                 <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                    SmartBranch
+                    DASO
                 </h1>
+                <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                    Dynamic Appointment & Slot Optimization System for Banks
+                </h2>
                 <p className="text-2xl text-gray-400">Welcome to the future of banking</p>
             </div>
 
